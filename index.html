@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EOLStore</title>
+<meta name="description" content="EOLStore &mdash; the Everyoneonline application store." />
+<link rel="stylesheet" href="css/metro.css" />
+</head>
+<body>
+  <div id="app-shell">
+    <header class="eol-header">
+      <button class="eol-brand" id="brand-home-link" aria-label="EOLStore home">
+        <span class="eol-brand-mark" aria-hidden="true">E</span>
+        <span class="eol-brand-name">EOL<strong>Store</strong></span>
+      </button>
+
+      <nav class="eol-nav" id="eol-nav" aria-label="Primary"></nav>
+
+      <div class="eol-header-search">
+        <form class="eol-search-form" id="header-search-form" role="search">
+          <input type="search" name="q" placeholder="Search for apps" aria-label="Search for apps" />
+          <button type="submit" aria-label="Search">&#128269;</button>
+        </form>
+      </div>
+    </header>
+
+    <main class="eol-main" id="eol-main" aria-live="polite"></main>
+
+    <footer class="eol-footer">
+      EOLStore &mdash; Everyoneonline. An original, independent store built with the Windows 8.1 Metro design language. Not affiliated with Microsoft.
+    </footer>
+  </div>
+
+  <!-- Configuration -->
+  <script src="js/config.js"></script>
+
+  <!-- Data layer -->
+  <script src="js/models.js"></script>
+  <script src="js/services/catalogService.js"></script>
+  <script src="js/services/searchService.js"></script>
+  <script src="js/services/featuredService.js"></script>
+  <script src="js/services/myAppsService.js"></script>
+
+  <!-- UI components -->
+  <script src="js/components/tileComponent.js"></script>
+  <script src="js/components/heroComponent.js"></script>
+  <script src="js/components/categoryComponent.js"></script>
+
+  <!-- Navigation / shared UI wiring -->
+  <script src="js/ui.js"></script>
+  <script src="js/navigation.js"></script>
+
+  <!-- Pages -->
+  <script src="js/pages/homePage.js"></script>
+  <script src="js/pages/appsPage.js"></script>
+  <script src="js/pages/gamesPage.js"></script>
+  <script src="js/pages/categoriesPage.js"></script>
+  <script src="js/pages/categoryDetailPage.js"></script>
+  <script src="js/pages/searchPage.js"></script>
+  <script src="js/pages/myAppsPage.js"></script>
+  <script src="js/pages/detailsPage.js"></script>
+
+  <!-- Bootstrap -->
+  <script src="js/app.js"></script>
+</body>
+</html>
