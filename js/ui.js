@@ -7,6 +7,22 @@
  * "open this app / category" behavior.
  */
 const UI = (function () {
+  /**
+   * Renders an <img> with a graceful fallback. If `src` 404s (e.g. a
+   * category icon or the logo hasn't been dropped into /assets yet), the
+   * broken image is hidden and `fallbackHtml` is shown in its place
+   * instead - so missing assets never show a broken-image icon, and
+   * supplying the real file later just works with no code change.
+   */
+  function imageWithFallback(src, altText, fallbackHtml, extraClass) {
+    return `
+      <span class="eol-img-fallback-wrap ${extraClass || ""}">
+        <img src="${src}" alt="${altText || ""}"
+             onerror="this.style.display='none'; this.parentElement.classList.add('fallback-active');" />
+        <span class="eol-img-fallback-inner">${fallbackHtml}</span>
+      </span>`;
+  }
+
   function wireDynamicHandlers(container) {
     container.addEventListener("click", (e) => {
       const navEl = e.target.closest("[data-nav]");
@@ -19,5 +35,5 @@ const UI = (function () {
     }, { once: false });
   }
 
-  return { wireDynamicHandlers };
+  return { wireDynamicHandlers, imageWithFallback };
 })();
