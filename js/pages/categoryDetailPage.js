@@ -20,6 +20,7 @@ const CategoryDetailPage = (function () {
       <div class="eol-page">
         <div class="eol-page-header">
           <button class="eol-back-btn" data-nav="route" data-id="categories" aria-label="Back to categories">&#8592;</button>
+          ${UI.imageWithFallback(category.icon, category.name, `<span class="eol-category-monogram" style="background:${category.color}">${category.name.charAt(0)}</span>`, "eol-category-icon eol-category-icon-lg")}
           <h1 class="eol-title">${category.name}</h1>
           <span class="eol-subtitle">${apps.length} apps</span>
         </div>
