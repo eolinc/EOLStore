@@ -127,3 +127,55 @@ Nothing here depends on Windows 10/11-only APIs. The path forward:
    APIs.
 3. Point `EOLConfig.catalogUrl` at your IIS-hosted `catalog.json`.
 4. Package as `.appx`/`.appxbundle` targeting Windows 8.1.
+
+## Asset update (branding, background, category icons, music)
+
+This update added a real asset pipeline plus a few visual/behavior
+features, without touching the existing pages, catalog shape, install
+flow, or navigation:
+
+```
+assets/
+├── branding/eolstore-logo.png     ← drop your logo here (see its README.txt)
+├── backgrounds/store-background.jpg  ← already in place (your uploaded photo)
+├── categories/<id>.png            ← one icon per category id (see README.txt)
+├── audio/store-theme.mp3          ← optional custom loop (see README.txt)
+└── apps/<id>/...                  ← optional real per-app art (see README.txt)
+```
+
+Every path above is also a single value in `EOLConfig.assets` (`js/config.js`)
+— nothing else references a literal path, so renaming/relocating a folder
+is a one-line change.
+
+**What's wired up already:**
+- **Background image** — shown behind every page with a dark overlay for
+  readability. Missing file → falls back to the original diagonal Metro
+  backdrop automatically (see `wireBackground()` in `js/app.js`).
+- **Logo** — shown in the header at a fixed height, true aspect ratio,
+  never stretched. Missing file → falls back to the "E" mark
+  (`index.html`'s inline `onerror`).
+- **Category icons** — each category in `catalog.json` has an `icon`
+  path. Missing file → falls back to a plain colored monogram (never an
+  emoji), via `UI.imageWithFallback()` in `js/ui.js`.
+- **Category showcase rotation** — every category tile (Categories page +
+  home's "Browse by category") now cycles its background art every
+  `EOLConfig.categoryShowcaseIntervalMs` (3.2s default) through a few apps
+  in that category — see `CategoryComponent.initShowcase()`.
+- **Looping background music** — the header's music-note button plays
+  `assets/audio/store-theme.mp3` on a loop if present; otherwise it
+  generates a short original synthesized loop in-browser
+  (`js/services/audioService.js`) so the feature works with zero setup.
+  Browsers block audio until a user gesture, so playback only starts from
+  that button's click — this is normal and not a bug.
+
+**One thing I couldn't use as-supplied:** the three game-cover reference
+images (a real title's box art, an Xbox-branded promotional graphic, and
+another game's character art) are official third-party promotional
+material, and the extended "Windows 98 startup sound" track is a
+recreation of Microsoft's trademarked startup jingle. Both are protected
+IP, and embedding either would also cut against this store's own
+"independent, not affiliated with Microsoft" positioning. The category
+rotation and background-music *features* they inspired are fully built —
+just pointed at original art/audio instead. Swap in your own licensed
+assets at the paths above any time.
+
