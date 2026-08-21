@@ -8,12 +8,18 @@
  */
 const HomePage = (function () {
   async function render() {
-    const [featuredSet, topApps, newReleases, categories] = await Promise.all([
+    const [featuredSet, topApps, newReleases, categories, allApps] = await Promise.all([
       FeaturedService.getFeaturedSet(),
       CatalogService.getTopByDownloads(6),
       CatalogService.getNewReleases(6),
-      CatalogService.getCategories()
+      CatalogService.getCategories(),
+      CatalogService.getAllApps()
     ]);
+
+    const appsByCategory = {};
+    allApps.forEach((app) => {
+      (appsByCategory[app.category] = appsByCategory[app.category] || []).push(app);
+    });
 
     const startIndex = FeaturedService.pickStartIndex(featuredSet);
 
@@ -42,7 +48,7 @@ const HomePage = (function () {
             <h2 class="eol-section-title">Browse by category</h2>
             <button class="eol-see-all" data-nav="route" data-id="categories">See all</button>
           </div>
-          ${CategoryComponent.renderGrid(categories.slice(0, 6))}
+          ${CategoryComponent.renderGrid(categories.slice(0, 6), appsByCategory)}
         </div>
       </div>`;
 
@@ -78,9 +84,11 @@ const HomePage = (function () {
       });
 
       startRotation();
+      const stopCategoryShowcase = CategoryComponent.initShowcase(container);
 
       return function cleanup() {
         if (rotationTimer) clearInterval(rotationTimer);
+        stopCategoryShowcase();
       };
     }
 
