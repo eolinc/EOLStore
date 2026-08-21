@@ -81,6 +81,25 @@ img, svg { display: block; max-width: 100%; }
   color: var(--eol-white);
 }
 
+.eol-brand-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+}
+
+/* The real logo file (assets/branding/eolstore-logo.png) is shown at its
+   natural aspect ratio - never stretched or cropped - capped to the
+   header's height. Until that file is supplied, index.html's inline
+   onerror handler swaps in the text/mark fallback below. */
+.eol-brand-logo {
+  height: 32px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  display: block;
+}
+
 .eol-brand-mark {
   width: 26px;
   height: 26px;
@@ -157,6 +176,40 @@ img, svg { display: block; max-width: 100%; }
   font-size: 15px;
 }
 
+/* Small skeuomorphic "pressed button" toggle for the looping store music -
+   a nod to the 90s Windows control aesthetic amid the flatter Metro chrome. */
+.eol-audio-toggle {
+  margin-left: 10px;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--eol-blue);
+  background: #e9e9e9;
+  border: 1px solid #7a7a7a;
+  border-top-color: #fdfdfd;
+  border-left-color: #fdfdfd;
+  border-bottom-color: #5a5a5a;
+  border-right-color: #5a5a5a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eol-audio-toggle:active,
+.eol-audio-toggle.on {
+  background: #cfcfcf;
+  border-top-color: #5a5a5a;
+  border-left-color: #5a5a5a;
+  border-bottom-color: #fdfdfd;
+  border-right-color: #fdfdfd;
+  color: var(--eol-blue-dark);
+}
+
+.eol-audio-toggle.on { color: #1f7a1f; }
+
 /* ---------- Page shell / diagonal Metro backdrop ---------- */
 
 .eol-main {
@@ -168,6 +221,47 @@ img, svg { display: block; max-width: 100%; }
   background-attachment: fixed;
 }
 
+/* Once EOLConfig.assets.background loads successfully, app.js sets an
+   inline background-image (a dark overlay + the photo) on this element
+   and adds this class purely for the sizing/position rules below - the
+   diagonal Metro backdrop above stays as the fallback until then. */
+.eol-main.has-store-background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Page content needs a solid-enough surface to stay readable once a photo
+   background is behind it - tiles/cards already have white/opaque
+   backgrounds, so only headings and hint text floating directly over the
+   backdrop need a touch of shadow for contrast. */
+.has-store-background .eol-title,
+.has-store-background .eol-section-title {
+  color: var(--eol-white);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.55);
+}
+.has-store-background .eol-subtitle,
+.has-store-background .eol-search-hint {
+  color: #e4e4e8;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.has-store-background .eol-see-all { color: #bcd3ff; }
+.has-store-background .eol-back-btn { color: var(--eol-white); text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+/* Details-page text blocks that sit directly on the photo background
+   (rather than inside a white card) need the same light-on-dark
+   treatment - the white cards (.eol-details-hero, .eol-side-facts,
+   .eol-tag chips) already have their own opaque background and don't
+   need any of this. */
+.has-store-background .eol-block-title { color: #c9d2ff; }
+.has-store-background .eol-desc-text,
+.has-store-background .eol-changelog-notes { color: #e8e8ee; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+.has-store-background .eol-changelog-version { color: #fff; }
+.has-store-background .eol-changelog-item { border-bottom-color: rgba(255,255,255,0.18); }
+.has-store-background .eol-empty-state { color: #d8dcf0; }
+.has-store-background .eol-empty-state .glyph { opacity: 0.7; }
+
 .eol-page {
   max-width: 1400px;
   margin: 0 auto;
@@ -176,10 +270,13 @@ img, svg { display: block; max-width: 100%; }
 
 .eol-page-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 14px;
   margin-bottom: 20px;
 }
+
+.eol-page-header .eol-title { align-self: baseline; }
+.eol-page-header .eol-subtitle { align-self: baseline; }
 
 .eol-back-btn {
   border: none;
@@ -478,13 +575,89 @@ img, svg { display: block; max-width: 100%; }
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 16px;
+  padding: 0;
   font: inherit;
   text-align: left;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  transition: background 700ms ease;
 }
 
-.eol-category-tile .name { font-size: 18px; font-weight: 600; }
-.eol-category-tile .tagline { font-size: 12px; opacity: 0.85; }
+/* The rotating showcase (CategoryComponent.initShowcase) swaps this
+   tile's background every EOLConfig.categoryShowcaseIntervalMs - the
+   caption sits in a translucent bar on top so it stays legible over any
+   app art cycling behind it. */
+.eol-category-tile-caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.38);
+}
+
+.eol-category-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.eol-category-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.eol-category-icon-lg { width: 44px; height: 44px; }
+
+/* Higher-specificity overrides: .eol-img-fallback-wrap's generic
+   width:100%/height:100% (below) would otherwise win the cascade by
+   source order and stretch these icons to fill their flex parent. */
+.eol-category-tile-caption .eol-img-fallback-wrap.eol-category-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+.eol-page-header .eol-img-fallback-wrap.eol-category-icon-lg {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.eol-category-monogram {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.eol-category-tile-text { display: flex; flex-direction: column; min-width: 0; }
+.eol-category-tile-text .name {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.eol-category-tile-text .count { font-size: 11.5px; opacity: 0.85; }
+
+/* Generic image-with-fallback wrapper (logo, category icons, ...): the
+   <img> and its fallback occupy the same box; onerror hides the broken
+   image and reveals the fallback instead of a broken-image glyph. */
+.eol-img-fallback-wrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+.eol-img-fallback-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.eol-img-fallback-inner { display: none; width: 100%; height: 100%; }
+.eol-img-fallback-wrap.fallback-active .eol-img-fallback-inner { display: flex; }
 
 /* ---------- Search ---------- */
 
