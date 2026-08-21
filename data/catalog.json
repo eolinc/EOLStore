@@ -2,17 +2,17 @@
   "storeName": "EOLStore",
   "generated": "2026-08-20",
   "categories": [
-    { "id": "games", "name": "Games", "color": "#107C10", "tagline": "Play something new" },
-    { "id": "utilities", "name": "Utilities", "color": "#2E3192", "tagline": "Get things done" },
-    { "id": "productivity", "name": "Productivity", "color": "#8764B8", "tagline": "Work smarter" },
-    { "id": "graphics", "name": "Graphics", "color": "#E3008C", "tagline": "Create and edit" },
-    { "id": "music", "name": "Music", "color": "#00B7C3", "tagline": "Listen everywhere" },
-    { "id": "video", "name": "Video", "color": "#D13438", "tagline": "Watch and stream" },
-    { "id": "internet", "name": "Internet", "color": "#0078D7", "tagline": "Stay connected" },
-    { "id": "education", "name": "Education", "color": "#498205", "tagline": "Learn something" },
-    { "id": "development", "name": "Development", "color": "#5C2D91", "tagline": "Build software" },
-    { "id": "system", "name": "System", "color": "#605E5C", "tagline": "Tune your PC" },
-    { "id": "personalization", "name": "Personalization", "color": "#B4009E", "tagline": "Make it yours" }
+    { "id": "games", "name": "Games", "color": "#107C10", "tagline": "Play something new", "icon": "assets/categories/games.png" },
+    { "id": "utilities", "name": "Utilities", "color": "#2E3192", "tagline": "Get things done", "icon": "assets/categories/utilities.png" },
+    { "id": "productivity", "name": "Productivity", "color": "#8764B8", "tagline": "Work smarter", "icon": "assets/categories/productivity.png" },
+    { "id": "graphics", "name": "Graphics", "color": "#E3008C", "tagline": "Create and edit", "icon": "assets/categories/graphics.png" },
+    { "id": "music", "name": "Music", "color": "#00B7C3", "tagline": "Listen everywhere", "icon": "assets/categories/music.png" },
+    { "id": "video", "name": "Video", "color": "#D13438", "tagline": "Watch and stream", "icon": "assets/categories/video.png" },
+    { "id": "internet", "name": "Internet", "color": "#0078D7", "tagline": "Stay connected", "icon": "assets/categories/internet.png" },
+    { "id": "education", "name": "Education", "color": "#498205", "tagline": "Learn something", "icon": "assets/categories/education.png" },
+    { "id": "development", "name": "Development", "color": "#5C2D91", "tagline": "Build software", "icon": "assets/categories/development.png" },
+    { "id": "system", "name": "System", "color": "#605E5C", "tagline": "Tune your PC", "icon": "assets/categories/system.png" },
+    { "id": "personalization", "name": "Personalization", "color": "#B4009E", "tagline": "Make it yours", "icon": "assets/categories/personalization.png" }
   ],
   "apps": [
     {
