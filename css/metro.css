@@ -284,6 +284,14 @@ img, svg { display: block; max-width: 100%; }
 .has-store-background .eol-see-all { color: #bcd3ff; }
 .has-store-background .eol-back-btn { color: var(--eol-white); text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
+/* The hero info panel has no background of its own anymore (it sits
+   directly on the page, matching the reference mockup), so it needs the
+   same light-on-dark treatment as everything else once the photo
+   backdrop is active. */
+.has-store-background .eol-hero-title { color: var(--eol-white); text-shadow: 0 1px 4px rgba(0,0,0,0.55); }
+.has-store-background .eol-hero-desc { color: #e8e8ee; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+.has-store-background .eol-hero-meta { color: #cfd2e6; }
+
 /* Details-page text blocks that sit directly on the photo background
    (rather than inside a white card) need the same light-on-dark
    treatment - the white cards (.eol-details-hero, .eol-side-facts,
@@ -370,7 +378,7 @@ img, svg { display: block; max-width: 100%; }
   display: grid;
   grid-template-columns: 60px 1fr;
   gap: 24px;
-  margin-bottom: 8px;
+  margin-bottom: 40px;
 }
 
 .eol-hero-selectors {
@@ -412,21 +420,34 @@ img, svg { display: block; max-width: 100%; }
   position: relative;
   min-height: 420px;
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  overflow: hidden;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 28px;
+  overflow: visible;
   cursor: pointer;
   border: none;
   padding: 0;
+  background: none;
   text-align: left;
   color: inherit;
   font: inherit;
 }
 
+.eol-hero-art-wrap {
+  position: relative;
+  overflow: visible;
+}
+
 .eol-hero-art {
   position: relative;
+  height: 100%;
+  min-height: 420px;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
+  /* The angled right edge from the reference mockup - the page
+     background shows through the cut corner since this stage has no
+     background of its own. */
+  clip-path: polygon(0 0, 100% 0, 76% 100%, 0 100%);
 }
 
 .eol-hero-art svg { width: 100%; height: 100%; }
@@ -456,13 +477,16 @@ img, svg { display: block; max-width: 100%; }
   transition: top 400ms ease;
 }
 
+/* No card background anymore - the text sits directly on the page
+   background, matching the reference mockup. Colors adapt via the
+   .has-store-background rules further down for when the photo backdrop
+   is active. */
 .eol-hero-info {
-  padding: 40px 36px;
+  padding: 40px 8px 40px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  background: var(--eol-white);
 }
 
 .eol-hero-eyebrow {
@@ -497,32 +521,49 @@ img, svg { display: block; max-width: 100%; }
   margin-top: 6px;
 }
 
+/* Thumbnails spill out below the image's bottom-left edge rather than
+   living inside a text card, matching the "scattered photos" look of the
+   reference mockup. Each one gets the same raised Win95 bevel as the
+   rest of the store's controls. */
 .eol-hero-thumbs {
+  position: absolute;
+  left: 24px;
+  bottom: -22px;
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  z-index: 2;
 }
 
 .eol-hero-thumbs > div {
-  width: 78px;
-  height: 50px;
+  width: 84px;
+  height: 54px;
   background-size: cover;
 }
+.eol-hero-thumbs > div:nth-child(2) { transform: translateY(6px); }
+.eol-hero-thumbs > div:nth-child(3) { transform: translateY(-4px); }
 
 /* ---------- Tiles / cards ---------- */
 
 .eol-tile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .eol-tile-grid.compact {
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 }
 
+/* The recessed frame "behind" every tile - a sunken Windows 95 well the
+   raised tile button sits inside, giving that classic double-depth
+   look (sunken slot + raised icon) instead of a flat card. */
+.eol-tile-slot {
+  padding: 5px;
+}
+
 .eol-tile {
   display: block;
+  width: 100%;
   border: none;
   text-align: left;
   cursor: pointer;
@@ -598,6 +639,7 @@ img, svg { display: block; max-width: 100%; }
 
 .eol-list-card {
   display: flex;
+  width: 100%;
   gap: 14px;
   padding: 12px;
   cursor: pointer;
@@ -642,6 +684,12 @@ img, svg { display: block; max-width: 100%; }
   gap: 12px;
 }
 
+/* Same recessed-well-behind-a-raised-button idea as the app tiles, sized
+   for the bigger Start-button-style category control. */
+.eol-category-slot {
+  padding: 5px;
+}
+
 /* Big Windows 95 "Start button" style control: same raised chrome as
    .win95-raised, scaled up and laid out horizontally (icon well + label)
    so it comfortably holds a real category image rather than just a
@@ -650,6 +698,7 @@ img, svg { display: block; max-width: 100%; }
   display: flex;
   align-items: center;
   gap: 16px;
+  width: 100%;
   min-height: 96px;
   padding: 14px 20px;
   border: none;
