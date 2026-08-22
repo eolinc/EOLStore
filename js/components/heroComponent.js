@@ -79,7 +79,7 @@ const HeroComponent = (function () {
 
   function renderStage(app, activeIndex = 0, total = 1) {
     const thumbs = (app.screenshots || []).slice(0, 3).map((s) =>
-      `<div style="background:${s.bg}"></div>`
+      `<div class="win95-raised" style="background:${s.bg}"></div>`
     ).join("");
 
     // Small vertical scroll-position indicator on the hero's left edge -
@@ -97,8 +97,11 @@ const HeroComponent = (function () {
 
     return `
       <button class="eol-hero-stage" data-nav="details" data-id="${app.id}" aria-label="Open ${app.name}">
-        ${scrollbar}
-        <div class="eol-hero-art">${renderArtSvg(app)}</div>
+        <div class="eol-hero-art-wrap">
+          ${scrollbar}
+          <div class="eol-hero-art">${renderArtSvg(app)}</div>
+          <div class="eol-hero-thumbs">${thumbs}</div>
+        </div>
         <div class="eol-hero-info">
           <span class="eol-hero-eyebrow">Featured on EOLStore</span>
           <h2 class="eol-hero-title">${app.name}</h2>
@@ -109,7 +112,6 @@ const HeroComponent = (function () {
             <span>&middot;</span>
             <span>${app.price}</span>
           </div>
-          <div class="eol-hero-thumbs">${thumbs}</div>
         </div>
       </button>`;
   }
