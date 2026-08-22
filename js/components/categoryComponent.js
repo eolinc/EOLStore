@@ -28,15 +28,17 @@ const CategoryComponent = (function () {
     const count = apps.length;
 
     return `
-      <button class="eol-category-tile win95-raised" data-nav="category" data-id="${category.id}">
-        <span class="eol-category-well" data-showcase-bgs="${bgsAttr}" style="background:${bgs[0]}">
-          ${UI.imageWithFallback(category.icon, category.name, monogram(category), "eol-category-icon")}
-        </span>
-        <span class="eol-category-tile-text">
-          <span class="name">${category.name}</span>
-          ${count ? `<span class="count">${count} app${count === 1 ? "" : "s"}</span>` : `<span class="count">${category.tagline || ""}</span>`}
-        </span>
-      </button>`;
+      <div class="eol-category-slot win95-sunken">
+        <button class="eol-category-tile win95-raised" data-nav="category" data-id="${category.id}">
+          <span class="eol-category-well" data-showcase-bgs="${bgsAttr}" style="background:${bgs[0]}">
+            ${UI.imageWithFallback(category.icon, category.name, monogram(category), "eol-category-icon")}
+          </span>
+          <span class="eol-category-tile-text">
+            <span class="name">${category.name}</span>
+            ${count ? `<span class="count">${count} app${count === 1 ? "" : "s"}</span>` : `<span class="count">${category.tagline || ""}</span>`}
+          </span>
+        </button>
+      </div>`;
   }
 
   function renderGrid(categories, appsByCategory = {}) {
