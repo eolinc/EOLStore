@@ -77,13 +77,27 @@ const HeroComponent = (function () {
       </button>`;
   }
 
-  function renderStage(app) {
+  function renderStage(app, activeIndex = 0, total = 1) {
     const thumbs = (app.screenshots || []).slice(0, 3).map((s) =>
       `<div style="background:${s.bg}"></div>`
     ).join("");
 
+    // Small vertical scroll-position indicator on the hero's left edge -
+    // a nod to the horizontal-panning position markers in the reference
+    // mockups. Purely visual feedback for "which of N featured apps is
+    // showing"; the selector rail to the left of the whole hero block is
+    // still what's clickable.
+    const thumbPct = total > 1 ? 100 / total : 100;
+    const topPct = total > 1 ? (activeIndex / total) * 100 : 0;
+    const scrollbar = total > 1 ? `
+      <div class="eol-hero-scrollbar" aria-hidden="true">
+        <div class="eol-hero-scrollbar-track"></div>
+        <div class="eol-hero-scrollbar-thumb" style="height:${thumbPct}%; top:${topPct}%"></div>
+      </div>` : "";
+
     return `
       <button class="eol-hero-stage" data-nav="details" data-id="${app.id}" aria-label="Open ${app.name}">
+        ${scrollbar}
         <div class="eol-hero-art">${renderArtSvg(app)}</div>
         <div class="eol-hero-info">
           <span class="eol-hero-eyebrow">Featured on EOLStore</span>
@@ -110,7 +124,7 @@ const HeroComponent = (function () {
     return `
       <div class="eol-hero">
         <div class="eol-hero-selectors">${selectors}</div>
-        <div class="eol-hero-stage-wrap">${renderStage(active)}</div>
+        <div class="eol-hero-stage-wrap">${renderStage(active, activeIndex, featuredApps.length)}</div>
       </div>`;
   }
 
