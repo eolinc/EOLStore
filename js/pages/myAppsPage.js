@@ -11,7 +11,9 @@ const MyAppsPage = (function () {
     const { app, installedVersion, updateAvailable } = entry;
     return `
       <div class="eol-myapp-row">
-        <div class="eol-tile-art" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</div>
+        <div class="eol-tile-art win95-raised" style="padding:4px;">
+          <span class="eol-tile-chip" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</span>
+        </div>
         <div>
           <div class="eol-list-card-name" style="cursor:pointer" data-nav="details" data-id="${app.id}">${app.name}</div>
           <div class="eol-myapp-versions">
