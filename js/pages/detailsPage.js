@@ -64,7 +64,9 @@ const DetailsPage = (function () {
         </div>
 
         <div class="eol-details-hero">
-          <div class="eol-details-icon" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</div>
+          <div class="eol-details-icon win95-raised">
+            <span class="eol-tile-chip eol-details-chip" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</span>
+          </div>
           <div>
             <h1 class="eol-details-title">${app.name}</h1>
             <div class="eol-details-publisher">${app.publisher}</div>
