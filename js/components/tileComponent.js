@@ -4,17 +4,23 @@
  * Small, pure render functions that turn an App into an HTML string. Every
  * page (home, category, search, my apps) builds its grids out of these so
  * the tile's markup and click wiring only exist in one place.
+ *
+ * Visual style: each tile is a Windows 95-style raised 3D button
+ * (.win95-raised, see metro.css) with the app's own art shown as a
+ * smaller centered "chip" - the button chrome stays neutral grey, the
+ * chip carries the per-app color/icon, so the whole grid still reads as
+ * a proper Store while matching the requested beveled-button look.
  */
 const TileComponent = (function () {
-  /** Small square Metro tile - used in dense grids (home rows, category browse). */
+  /** Small square Win95-button tile - used in dense grids (home rows, category browse). */
   function renderTile(app) {
     const priceBadge = app.price && app.price !== "Free"
       ? `<span class="eol-tile-price">${app.price}</span>`
       : "";
     return `
-      <button class="eol-tile" data-nav="details" data-id="${app.id}" aria-label="${app.name}">
-        <div class="eol-tile-art" style="background:${app.icon.bg};color:${app.icon.fg}">
-          ${app.icon.glyph}
+      <button class="eol-tile win95-raised" data-nav="details" data-id="${app.id}" aria-label="${app.name}">
+        <div class="eol-tile-art">
+          <span class="eol-tile-chip" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</span>
           ${priceBadge}
         </div>
         <div class="eol-tile-body">
@@ -30,8 +36,10 @@ const TileComponent = (function () {
   /** Wider list-style card with description - used on search results and category detail. */
   function renderListCard(app) {
     return `
-      <button class="eol-list-card" data-nav="details" data-id="${app.id}" aria-label="${app.name}">
-        <div class="eol-tile-art" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</div>
+      <button class="eol-list-card win95-raised" data-nav="details" data-id="${app.id}" aria-label="${app.name}">
+        <div class="eol-tile-art">
+          <span class="eol-tile-chip" style="background:${app.icon.bg};color:${app.icon.fg}">${app.icon.glyph}</span>
+        </div>
         <div class="eol-list-card-body">
           <div class="eol-list-card-name">${app.name}</div>
           <div class="eol-list-card-desc">${app.shortDescription}</div>
