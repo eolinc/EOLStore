@@ -9,11 +9,12 @@
  * (not an emoji or generic stock icon) stands in so the layout never
  * shows a broken image.
  *
- * Tiles also cycle through the hero art of a few apps in that category
- * every EOLConfig.categoryShowcaseIntervalMs, giving each tile the
- * "now showing App A / App B / App C" rotation - driven entirely by
- * catalog data, so it automatically reflects whatever apps are actually
- * in a category.
+ * Visual style: a big Windows 95-style raised button - the same chrome
+ * as the classic Start button, scaled up to comfortably hold an icon and
+ * label. The icon sits in a small "well" that cycles through the hero
+ * art of a few apps in that category every
+ * EOLConfig.categoryShowcaseIntervalMs, so each button also shows a
+ * rotating sample of what's inside - driven entirely by catalog data.
  */
 const CategoryComponent = (function () {
   function monogram(category) {
@@ -27,16 +28,14 @@ const CategoryComponent = (function () {
     const count = apps.length;
 
     return `
-      <button class="eol-category-tile" data-nav="category" data-id="${category.id}"
-              data-showcase-bgs="${bgsAttr}"
-              style="background:${bgs[0]}">
-        <div class="eol-category-tile-caption">
+      <button class="eol-category-tile win95-raised" data-nav="category" data-id="${category.id}">
+        <span class="eol-category-well" data-showcase-bgs="${bgsAttr}" style="background:${bgs[0]}">
           ${UI.imageWithFallback(category.icon, category.name, monogram(category), "eol-category-icon")}
-          <span class="eol-category-tile-text">
-            <span class="name">${category.name}</span>
-            ${count ? `<span class="count">${count} app${count === 1 ? "" : "s"}</span>` : `<span class="count">${category.tagline || ""}</span>`}
-          </span>
-        </div>
+        </span>
+        <span class="eol-category-tile-text">
+          <span class="name">${category.name}</span>
+          ${count ? `<span class="count">${count} app${count === 1 ? "" : "s"}</span>` : `<span class="count">${category.tagline || ""}</span>`}
+        </span>
       </button>`;
   }
 
@@ -48,17 +47,17 @@ const CategoryComponent = (function () {
   }
 
   /**
-   * Starts the background-swap timers for every showcase tile inside
+   * Starts the background-swap timers for every showcase well inside
    * `container`. Returns a cleanup function that clears them all - call
    * this from a page's afterRender and return its result (or chain it)
    * so Navigation clears timers on route change.
    */
   function initShowcase(container) {
     const timers = [];
-    container.querySelectorAll("[data-showcase-bgs]").forEach((tile) => {
+    container.querySelectorAll("[data-showcase-bgs]").forEach((well) => {
       let bgs;
       try {
-        bgs = JSON.parse(tile.dataset.showcaseBgs.replace(/&quot;/g, '"'));
+        bgs = JSON.parse(well.dataset.showcaseBgs.replace(/&quot;/g, '"'));
       } catch (e) {
         bgs = null;
       }
@@ -66,7 +65,7 @@ const CategoryComponent = (function () {
       let idx = 0;
       timers.push(setInterval(() => {
         idx = (idx + 1) % bgs.length;
-        tile.style.background = bgs[idx];
+        well.style.background = bgs[idx];
       }, EOLConfig.categoryShowcaseIntervalMs));
     });
     return () => timers.forEach(clearInterval);
