@@ -17,9 +17,9 @@ const SearchPage = (function () {
         <div class="eol-page-header">
           <h1 class="eol-title">Search</h1>
         </div>
-        <form class="eol-searchbox-inline" id="search-page-form" role="search">
+        <form class="eol-searchbox-inline win95-sunken" id="search-page-form" role="search">
           <input type="search" name="q" placeholder="Search for apps" value="${escapeAttr(q)}" autofocus />
-          <button type="submit" aria-label="Search">&#128269;</button>
+          <button type="submit" class="win95-raised" aria-label="Search">&#128269;</button>
         </form>
 
         <div class="eol-section">
