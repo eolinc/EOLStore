@@ -1,15 +1,16 @@
 /**
  * Hero component
  * ----------------
- * Renders the homepage's large featured stage plus the vertical selector
- * rail from the mockups. Art is generated procedurally from each app's
- * "hero" gradient/accent (original abstract compositions - diagonal
- * shards, orbits, waveforms - never reproductions of any third-party
- * artwork), so every featured app gets a distinct look driven purely by
- * catalog data.
+ * Renders the Store's featured area exactly like the reference mockup:
+ * a collage of several differently-shaped image fragments (not one plain
+ * rectangle), a column of plain white vertical rectangles to its left
+ * that switch the featured app when clicked, and the app's name/
+ * description written into the empty space beside the collage rather
+ * than boxed in a card.
  *
- * A seeded-per-app shape picker keeps the same app looking the same way
- * every time, while different apps get visibly different scenes.
+ * All art is generated procedurally from each app's own catalog data
+ * (hero gradient/accent, screenshot colors) - original abstract
+ * compositions, never reproductions of any third-party artwork.
  */
 const HeroComponent = (function () {
   function shapeSeed(id) {
@@ -19,9 +20,9 @@ const HeroComponent = (function () {
   }
 
   /** Abstract geometric scene: diagonal shards + orbit rings, tuned to the app's accent color. */
-  function renderArtSvg(app) {
+  function renderArtSvg(app, seedOffset = 0) {
     const accent = app.hero.accent || "#ffffff";
-    const seed = shapeSeed(app.id);
+    const seed = shapeSeed(app.id) + seedOffset;
     const shardCount = 3 + (seed % 3);
     let shards = "";
     for (let i = 0; i < shardCount; i++) {
@@ -37,13 +38,14 @@ const HeroComponent = (function () {
       return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${accent}" stroke-opacity="${0.35 - i * 0.09}" stroke-width="1.5" />`;
     }).join("");
     const dot = `<circle cx="${cx}" cy="${cy}" r="5" fill="${accent}" opacity="0.9" />`;
+    const gradId = `g-${app.id}-${seedOffset}`;
 
     return `
       <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${app.name} artwork">
-        <rect width="600" height="600" fill="${app.hero.bg.startsWith('linear') ? 'url(#g-' + app.id + ')' : app.hero.bg}" />
+        <rect width="600" height="600" fill="${app.hero.bg.startsWith('linear') ? `url(#${gradId})` : app.hero.bg}" />
         ${app.hero.bg.startsWith("linear") ? `
           <defs>
-            <linearGradient id="g-${app.id}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="100%">
               ${cssGradientToSvgStops(app.hero.bg)}
             </linearGradient>
           </defs>` : ""}
@@ -66,27 +68,41 @@ const HeroComponent = (function () {
     }).join("");
   }
 
+  /** Plain white vertical rectangle selector, per the reference mockup - not a colored icon tile. */
   function renderSelector(app, isActive) {
     return `
       <button class="eol-selector ${isActive ? "active" : ""}"
               data-hero-select="${app.id}"
-              style="background:${app.icon.bg}"
               aria-pressed="${isActive}"
               aria-label="Show ${app.name}">
-        <span class="eol-selector-icon" style="color:${app.icon.fg}">${app.icon.glyph}</span>
+        <span class="eol-selector-glyph" style="color:${app.icon.bg}">${app.icon.glyph}</span>
       </button>`;
   }
 
-  function renderStage(app, activeIndex = 0, total = 1) {
-    const thumbs = (app.screenshots || []).slice(0, 3).map((s) =>
-      `<div class="win95-raised" style="background:${s.bg}"></div>`
-    ).join("");
+  /**
+   * The four-piece collage: one large shard (the app's main art) plus
+   * three smaller, differently-clipped fragments built from its
+   * screenshot colors - scattered like cut/torn photos, matching the
+   * reference mockup rather than a single rectangle.
+   */
+  function renderCollage(app) {
+    const shots = app.screenshots && app.screenshots.length
+      ? app.screenshots
+      : [{ bg: app.icon.bg }, { bg: app.hero.accent }, { bg: app.icon.bg }];
+    const s1 = shots[0] || { bg: app.icon.bg };
+    const s2 = shots[1] || shots[0] || { bg: app.icon.bg };
+    const s3 = shots[2] || shots[0] || { bg: app.hero.accent };
 
-    // Small vertical scroll-position indicator on the hero's left edge -
-    // a nod to the horizontal-panning position markers in the reference
-    // mockups. Purely visual feedback for "which of N featured apps is
-    // showing"; the selector rail to the left of the whole hero block is
-    // still what's clickable.
+    return `
+      <div class="eol-hero-collage">
+        <div class="eol-collage-piece eol-collage-main">${renderArtSvg(app)}</div>
+        <div class="eol-collage-piece eol-collage-b win95-raised" style="background:${s1.bg}"></div>
+        <div class="eol-collage-piece eol-collage-c win95-raised" style="background:${s2.bg}"></div>
+        <div class="eol-collage-piece eol-collage-d win95-raised" style="background:${s3.bg}"></div>
+      </div>`;
+  }
+
+  function renderStage(app, activeIndex = 0, total = 1) {
     const thumbPct = total > 1 ? 100 / total : 100;
     const topPct = total > 1 ? (activeIndex / total) * 100 : 0;
     const scrollbar = total > 1 ? `
@@ -99,8 +115,7 @@ const HeroComponent = (function () {
       <button class="eol-hero-stage" data-nav="details" data-id="${app.id}" aria-label="Open ${app.name}">
         <div class="eol-hero-art-wrap">
           ${scrollbar}
-          <div class="eol-hero-art">${renderArtSvg(app)}</div>
-          <div class="eol-hero-thumbs">${thumbs}</div>
+          ${renderCollage(app)}
         </div>
         <div class="eol-hero-info">
           <span class="eol-hero-eyebrow">Featured on EOLStore</span>
