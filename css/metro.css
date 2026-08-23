@@ -311,6 +311,65 @@ img, svg { display: block; max-width: 100%; }
   padding: 28px 40px 80px;
 }
 
+/* The home page is a single horizontally-panning canvas (Windows 8/8.1
+   Start screen/Store style) rather than a normal vertically-scrolling
+   page - it gets its own edge-to-edge treatment instead of the usual
+   centered/padded .eol-page box. */
+.eol-page--home {
+  max-width: none;
+  padding: 28px 0 40px;
+}
+
+.eol-home-scroll {
+  display: flex;
+  align-items: flex-start;
+  gap: 56px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 40px 28px;
+  cursor: grab;
+  /* Native touch swipe panning; JS (UI.enableHorizontalPan) adds mouse
+     wheel + click-drag panning on top for desktop. */
+  touch-action: pan-x;
+  scrollbar-width: thin;
+}
+.eol-home-scroll.panning { cursor: grabbing; }
+
+.eol-home-col {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.eol-home-col--hero {
+  width: min(78vw, 1040px);
+}
+
+.eol-home-col-tiles {
+  width: max-content;
+}
+/* Tiles flow downward two at a time, then start a new column to the
+   right - the classic Metro "group" shape - rather than wrapping into a
+   single tall vertical list. */
+.eol-home-col-tiles .eol-tile-grid {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-auto-flow: column;
+  grid-auto-columns: 150px;
+  gap: 12px;
+}
+
+.eol-home-col-categories {
+  width: max-content;
+}
+.eol-home-col-categories .eol-category-grid {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: 300px;
+  gap: 12px;
+}
+
 .eol-page-header {
   display: flex;
   align-items: center;
@@ -378,7 +437,7 @@ img, svg { display: block; max-width: 100%; }
   display: grid;
   grid-template-columns: 60px 1fr;
   gap: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 56px;
 }
 
 .eol-hero-selectors {
@@ -387,32 +446,34 @@ img, svg { display: block; max-width: 100%; }
   gap: 6px;
 }
 
+/* Plain white vertical rectangles, per the reference mockup - clicking
+   one switches the featured app. A small tinted glyph is kept so each
+   bar is still identifiable at a glance without becoming a colored icon
+   tile. */
 .eol-selector {
   width: 60px;
   height: 64px;
   border: none;
   cursor: pointer;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  opacity: 0.72;
-  transition: opacity 120ms ease;
-  padding: 0;
-}
-
-.eol-selector:hover { opacity: 0.92; }
-
-.eol-selector.active {
-  opacity: 1;
-  box-shadow: inset 0 0 0 3px var(--eol-white), inset 0 0 0 5px var(--eol-blue);
-}
-
-.eol-selector-icon {
-  width: 100%;
-  height: 100%;
+  background: rgba(255,255,255,0.55);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  opacity: 0.85;
+  transition: opacity 120ms ease, background 120ms ease;
+  padding: 0;
+}
+
+.eol-selector:hover { opacity: 1; background: rgba(255,255,255,0.75); }
+
+.eol-selector.active {
+  opacity: 1;
+  background: rgba(255,255,255,0.98);
+  box-shadow: inset 0 0 0 3px var(--eol-blue);
+}
+
+.eol-selector-glyph {
   font-size: 20px;
 }
 
@@ -437,20 +498,57 @@ img, svg { display: block; max-width: 100%; }
   overflow: visible;
 }
 
-.eol-hero-art {
+/* Four differently-shaped fragments scattered like cut/torn photos,
+   matching the reference mockup instead of one plain rectangle. */
+.eol-hero-collage {
   position: relative;
+  width: 100%;
   height: 100%;
   min-height: 420px;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  /* The angled right edge from the reference mockup - the page
-     background shows through the cut corner since this stage has no
-     background of its own. */
-  clip-path: polygon(0 0, 100% 0, 76% 100%, 0 100%);
 }
 
-.eol-hero-art svg { width: 100%; height: 100%; }
+.eol-collage-piece {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+}
+
+.eol-collage-main {
+  inset: 0;
+  width: 82%;
+  height: 100%;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 74% 100%, 0 100%);
+  z-index: 1;
+}
+.eol-collage-main svg { width: 100%; height: 100%; }
+
+.eol-collage-b {
+  top: 4%;
+  right: 2%;
+  width: 30%;
+  height: 40%;
+  clip-path: polygon(18% 0, 100% 6%, 88% 100%, 0% 92%);
+  z-index: 2;
+}
+
+.eol-collage-c {
+  bottom: 6%;
+  right: 8%;
+  width: 26%;
+  height: 34%;
+  clip-path: polygon(0 12%, 100% 0, 100% 88%, 0% 100%);
+  z-index: 2;
+}
+
+.eol-collage-d {
+  left: 4%;
+  bottom: -8%;
+  width: 24%;
+  height: 32%;
+  clip-path: polygon(12% 0, 100% 8%, 88% 100%, 0 92%);
+  z-index: 3;
+}
 
 /* Small vertical scroll-position indicator on the hero's left edge - a
    nod to the horizontal-panning position marker seen in the reference
@@ -460,20 +558,20 @@ img, svg { display: block; max-width: 100%; }
   position: absolute;
   top: 16px;
   bottom: 16px;
-  left: 10px;
+  left: -16px;
   width: 5px;
-  z-index: 2;
+  z-index: 4;
 }
 .eol-hero-scrollbar-track {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.25);
+  background: rgba(120,120,140,0.3);
 }
 .eol-hero-scrollbar-thumb {
   position: absolute;
   left: 0;
   right: 0;
-  background: rgba(255,255,255,0.85);
+  background: rgba(46,49,146,0.7);
   transition: top 400ms ease;
 }
 
@@ -520,27 +618,6 @@ img, svg { display: block; max-width: 100%; }
   color: var(--eol-muted);
   margin-top: 6px;
 }
-
-/* Thumbnails spill out below the image's bottom-left edge rather than
-   living inside a text card, matching the "scattered photos" look of the
-   reference mockup. Each one gets the same raised Win95 bevel as the
-   rest of the store's controls. */
-.eol-hero-thumbs {
-  position: absolute;
-  left: 24px;
-  bottom: -22px;
-  display: flex;
-  gap: 10px;
-  z-index: 2;
-}
-
-.eol-hero-thumbs > div {
-  width: 84px;
-  height: 54px;
-  background-size: cover;
-}
-.eol-hero-thumbs > div:nth-child(2) { transform: translateY(6px); }
-.eol-hero-thumbs > div:nth-child(3) { transform: translateY(-4px); }
 
 /* ---------- Tiles / cards ---------- */
 
