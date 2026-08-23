@@ -1,17 +1,20 @@
 /**
  * Home page
  * ----------
- * Reproduces the mockups' homepage structure: a large featured hero with
- * vertical selectors, followed by horizontal-feeling tile rows ("Top
- * apps", "New releases") and a categories strip. All data comes from
- * CatalogService/FeaturedService - nothing here is hard-coded art.
+ * A single horizontally-panning canvas, like the Windows 8/8.1 Start
+ * screen and Store actually work: nothing stacks vertically below the
+ * fold. The hero sits as the first "column", and Top apps / New
+ * releases / Browse by category continue to its right as further
+ * columns - reveal them with touch swipe, mouse wheel, or by holding the
+ * left mouse button and dragging (UI.enableHorizontalPan handles the
+ * wheel/drag input; touch panning is native browser behavior).
  */
 const HomePage = (function () {
   async function render() {
     const [featuredSet, topApps, newReleases, categories, allApps] = await Promise.all([
       FeaturedService.getFeaturedSet(),
-      CatalogService.getTopByDownloads(6),
-      CatalogService.getNewReleases(6),
+      CatalogService.getTopByDownloads(8),
+      CatalogService.getNewReleases(8),
       CatalogService.getCategories(),
       CatalogService.getAllApps()
     ]);
@@ -23,36 +26,41 @@ const HomePage = (function () {
 
     const startIndex = FeaturedService.pickStartIndex(featuredSet);
 
+    function tileColumn(title, apps, seeAllRoute) {
+      return `
+        <section class="eol-home-col">
+          <div class="eol-section-header">
+            <h2 class="eol-section-title">${title}</h2>
+            <button class="eol-see-all" data-nav="route" data-id="${seeAllRoute}">See all</button>
+          </div>
+          <div class="eol-home-col-tiles">${TileComponent.renderTileGrid(apps)}</div>
+        </section>`;
+    }
+
     const html = `
-      <div class="eol-page">
-        <div id="home-hero">${HeroComponent.render(featuredSet, Math.max(startIndex, 0))}</div>
+      <div class="eol-page eol-page--home">
+        <div class="eol-home-scroll" id="home-scroll">
+          <section class="eol-home-col eol-home-col--hero" id="home-hero">
+            ${HeroComponent.render(featuredSet, Math.max(startIndex, 0))}
+          </section>
 
-        <div class="eol-section">
-          <div class="eol-section-header">
-            <h2 class="eol-section-title">Top apps</h2>
-            <button class="eol-see-all" data-nav="route" data-id="apps">See all</button>
-          </div>
-          ${TileComponent.renderTileGrid(topApps)}
-        </div>
+          ${tileColumn("Top apps", topApps, "apps")}
+          ${tileColumn("New releases", newReleases, "apps")}
 
-        <div class="eol-section">
-          <div class="eol-section-header">
-            <h2 class="eol-section-title">New releases</h2>
-            <button class="eol-see-all" data-nav="route" data-id="apps">See all</button>
-          </div>
-          ${TileComponent.renderTileGrid(newReleases)}
-        </div>
-
-        <div class="eol-section">
-          <div class="eol-section-header">
-            <h2 class="eol-section-title">Browse by category</h2>
-            <button class="eol-see-all" data-nav="route" data-id="categories">See all</button>
-          </div>
-          ${CategoryComponent.renderGrid(categories.slice(0, 6), appsByCategory)}
+          <section class="eol-home-col eol-home-col--categories">
+            <div class="eol-section-header">
+              <h2 class="eol-section-title">Browse by category</h2>
+              <button class="eol-see-all" data-nav="route" data-id="categories">See all</button>
+            </div>
+            <div class="eol-home-col-categories">
+              ${CategoryComponent.renderGrid(categories.slice(0, 6), appsByCategory)}
+            </div>
+          </section>
         </div>
       </div>`;
 
     function afterRender(container) {
+      const scrollEl = container.querySelector("#home-scroll");
       const heroWrap = container.querySelector("#home-hero");
       let activeIndex = Math.max(startIndex, 0);
       let rotationTimer = null;
@@ -85,10 +93,12 @@ const HomePage = (function () {
 
       startRotation();
       const stopCategoryShowcase = CategoryComponent.initShowcase(container);
+      const stopPan = UI.enableHorizontalPan(scrollEl);
 
       return function cleanup() {
         if (rotationTimer) clearInterval(rotationTimer);
         stopCategoryShowcase();
+        stopPan();
       };
     }
 
